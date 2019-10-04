@@ -2,6 +2,8 @@ package com.eztier.testhttp4sdoobie.domain
 package authors
 
 import cats.Applicative
+import cats.Functor
+
 import cats.data.EitherT
 import cats.implicits._
 
@@ -15,8 +17,10 @@ class AuthorValidationInterpreter[F[_]: Applicative](authorRepo: AuthorRepositor
   def exists(authorId: Option[Long]): EitherT[F, AuthorNotFoundError.type, Unit] =
     authorId match {
       case Some(id) =>
+
         authorRepo.get(id)
           .toRight(AuthorNotFoundError)
+
           .void // Functor.void[A](fa: F[A])  Empty the fa of the values, preserving the structure
           
       case None =>
