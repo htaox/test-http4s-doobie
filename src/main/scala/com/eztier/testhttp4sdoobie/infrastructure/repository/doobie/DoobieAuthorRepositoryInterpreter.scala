@@ -14,13 +14,13 @@ private object AuthorSQL {
 
   def findOneSql(id: Long): Query0[Author] = sql"""
     SELECT first_name, last_name, email, phone, id
-    FROM authors
+    FROM author
     WHERE id = $id
   """.query
 
   def findByEmailSql(email: String): Query0[Author] = sql"""
     SELECT first_name, last_name, email, phone, id
-    FROM authors
+    FROM author
     WHERE email = $email
   """.query
 }
