@@ -2,12 +2,11 @@ package com.eztier.testhttp4sdoobie.domain
 package authors
 
 import cats.Applicative
-import cats.Functor
-
 import cats.data.EitherT
-import cats.implicits._
+// import cats.implicits._
 
-class AuthorValidationInterpreter[F[_]: Applicative](authorRepo: AuthorRepositoryAlgebra[F]) extends AuthorValidationAlgebra[F] {
+class AuthorValidationInterpreter[F[_]: Applicative](authorRepo: AuthorRepositoryAlgebra[F])
+    extends AuthorValidationAlgebra[F] {
   def doesNotExist(author: Author): EitherT[F, AuthorAlreadyExistsError, Unit] =
     authorRepo
       .findByEmail(author.email)
@@ -17,16 +16,15 @@ class AuthorValidationInterpreter[F[_]: Applicative](authorRepo: AuthorRepositor
   def exists(authorId: Option[Long]): EitherT[F, AuthorNotFoundError.type, Unit] =
     authorId match {
       case Some(id) =>
-
         authorRepo.get(id)
-          .toRight(AuthorNotFoundError)
-
-          .void // Functor.void[A](fa: F[A])  Empty the fa of the values, preserving the structure
-          
+          .toRight(AuthorNotFoundError) // Converts OptionT[F, A] to EitherT[F, L, A]
+          .map(_ => ())
       case None =>
         // EitherT.leftT, EitherT.rightT is alias for EitherT.pure
-        EitherT.left[Unit](AuthorNotFoundError.pure[F])
+        // EitherT.left[Unit](AuthorNotFoundError.pure[F])
+        EitherT.leftT(AuthorNotFoundError)
     }
+
 }
 
 object AuthorValidationInterpreter {

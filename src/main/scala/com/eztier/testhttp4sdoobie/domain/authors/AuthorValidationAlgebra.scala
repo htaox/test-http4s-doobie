@@ -7,6 +7,6 @@ trait AuthorValidationAlgebra[F[_]] {
   /* Fails with a AuthorAlreadyExistsError */
   def doesNotExist(author: Author): EitherT[F, AuthorAlreadyExistsError, Unit]
 
-  /* Fails with a AuthorNotFoundError if the authot id does not exist or if it is none */
+  /* Fails with a AuthorNotFoundError if the author id does not exist or if it is none */
   def exists(authorId: Option[Long]): EitherT[F, AuthorNotFoundError.type, Unit]
 }
